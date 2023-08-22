@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { ContactsForm } from '../ContactsForm/ContactsForm';
-import { Filter } from '../Filter/Filter';
-import { ContactList } from '../ContactsList/ContactsList';
-import { AppWrapper,Title, SearchWrapper, StyledTitles, CloseBtn, OpenPhonebook } from './app.styled';
+// import React, { Component } from 'react';
+// import { ContactsForm } from '../ContactsForm/ContactsForm';
+// import { Filter } from '../Filter/Filter';
+// import { ContactList } from '../ContactsList/ContactsList';
+// import { AppWrapper,Title, SearchWrapper, StyledTitles, CloseBtn, OpenPhonebook } from './app.styled';
 
 
-const localStorageKey = 'contacts'
+// const localStorageKey = 'contacts'
 
 export class App extends Component {
   // state = {
