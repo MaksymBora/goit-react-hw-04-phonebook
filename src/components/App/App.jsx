@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { useState, useEffect } from "react";
 import { ContactsForm } from '../ContactsForm/ContactsForm';
 import { Filter } from '../Filter/Filter';
 import { ContactList } from '../ContactsList/ContactsList';
@@ -7,91 +7,72 @@ import { AppWrapper,Title, SearchWrapper, StyledTitles, CloseBtn, OpenPhonebook 
 
 const localStorageKey = 'contacts'
 
-export class App extends Component {
-  state = {
-    contacts: [
-    ],
-    filter: '',
-    isOpen: false,
-  };
-  
-  componentDidMount = () => { 
+export const App = () => {
+  const [contacts, setContacts] = useState(() => {
     const savedContacts = localStorage.getItem(localStorageKey);
-
     if (savedContacts !== null) {
-      this.setState({
-        contacts: JSON.parse(savedContacts),
-      })
+      return JSON.parse(savedContacts);
     }
-  }
-  
-  componentDidUpdate = (prevProps, prevState) => {
-    
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem(localStorageKey, JSON.stringify(this.state.contacts));
-   }
-  }
+    return [];
+  });
+  const [filter, setFilter] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(( ) => {
+      localStorage.setItem(localStorageKey, JSON.stringify(contacts));
+  }, [contacts]);
   
 
-  
-  addContact = (newContact) => {
-    if (this.state.contacts.find(contact => contact.name === newContact.name)) {
+
+
+    const addContact = (newContact) => {
+    if (contacts.find(contact => contact.name === newContact.name)) {
       return alert(`${newContact.name} is already in contacts`);
     }
       
-    if (this.state.contacts.find(contact => contact.number === newContact.number)) {
+    if (contacts.find(contact => contact.number === newContact.number)) {
       return alert(`${newContact.number} is already in contacts`);
     }
-
-    this.setState(prevState => ({
-      contacts: [ ...prevState.contacts, newContact]
-    }));
+      setContacts(prevState => [...prevState, newContact]);
   };
 
 
-
-  getContact = evt => {
+  const getContact = evt => {
     const searchQuerry = evt.currentTarget.value;
-    this.setState({filter: searchQuerry})
+    setFilter(searchQuerry)
+    
   }
   
-  removeContact = contactId => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
-    }));
+  const removeContact = contactId => {
+    setContacts(prevState => prevState.filter(contact => contact.id !== contactId));
   };
 
-  showPhonebook = () => {
-    this.setState({ isOpen: true });
+  const showPhonebook = () => {
+    setIsOpen(true)
   };
 
-    hidePhonebook = () => {
-    this.setState({ isOpen: false });
+  const hidePhonebook = () => {
+      setIsOpen(false)
   };
-  
-  render() {
-    const { contacts, filter } = this.state;
+
     const filteredContacts = contacts.filter(({ name }) => name.toLowerCase().includes(filter.toLocaleLowerCase()));
     return (
       <>
-        {!this.state.isOpen && <OpenPhonebook onClick={this.showPhonebook} className="phoneBook">Open Phonebook</OpenPhonebook>}
-        {this.state.isOpen &&
+        {!isOpen && <OpenPhonebook onClick={showPhonebook} className="phoneBook">Open Phonebook</OpenPhonebook>}
+        {isOpen &&
           <AppWrapper>
-            <CloseBtn onClick={this.hidePhonebook}/>
-            <ContactsForm onAdd={ this.addContact } />
+            <CloseBtn onClick={hidePhonebook}/>
+            <ContactsForm onAdd={ addContact } />
             <SearchWrapper>
               <StyledTitles>
                 <Title>Contacts</Title>
                 <p>Find contacts by name</p>
               </StyledTitles>
-              <Filter filter={ filter } getContact={this.getContact}  />
-              <ContactList filteredContacts={filteredContacts} removeContact={ this.removeContact} />
+              <Filter filter={ filter } getContact={getContact}  />
+              <ContactList filteredContacts={filteredContacts} removeContact={ removeContact} />
             </SearchWrapper>
         </AppWrapper>
         }
-          
         </>
     )
-  }
-};
-// test
+}
