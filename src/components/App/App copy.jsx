@@ -7,7 +7,7 @@
 
 // const localStorageKey = 'contacts'
 
-export class App extends Component {
+// export class App extends Component {
   // state = {
   //   contacts: [
   //   ],
